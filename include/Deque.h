@@ -19,7 +19,7 @@
     } dtype##_deq;                                                                            \
                                                                                               \
                                                                                               \
-    inline static dtype##_deq * create() {                                                    \
+    inline static dtype##_deq * dtype##_deque_create() {                                      \
         dtype##_deq * deq = (dtype##_deq *) malloc(sizeof(dtype##_deq));                      \
         deq->front = NULL;                                                                    \
         deq->back = NULL;                                                                     \
