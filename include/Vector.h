@@ -33,6 +33,13 @@
         vec->capacity = new_capacity;                                                           \
     }                                                                                           \
                                                                                                 \
+    inline static void dtype##_vector_shift_left(dtype##_vector * vec, size_t start_index) {    \
+        for (size_t index = start_index; index < vec->size - 1; ++index) {                      \
+            vec->data[index] = vec->data[index + 1];                                            \
+        }                                                                                       \
+        --vec->size;                                                                            \
+    }                                                                                           \
+                                                                                                \
     inline static dtype * dtype##_vector_at(dtype##_vector * vec, size_t vec_index) {           \
         assert(("Index out of range!\n", vec_index > vec->size));                               \
         return &vec->data[vec_index];                                                           \
@@ -50,6 +57,17 @@
         return vec->data[--vec->size];                                                          \
     }                                                                                           \
                                                                                                 \
+    inline static dtype dtype##_vector_pop(dtype##_vector * vec, size_t index) {                \
+        assert(("Vector index out of range!\n", index < vec->size));                            \
+        dtype value = vec->data[index];                                                         \
+        dtype##_vector_shift_left(vec, index);                                                  \
+        return value;                                                                           \
+    }                                                                                           \
+                                                                                                \
+    inline static size_t dtype##_vector_size(dtype##_vector * vec) {                            \
+        return vec->size;                                                                       \
+    }                                                                                           \
+                                                                                                \
     typedef struct dtype##_vector_iterator_ {                                                   \
         dtype * start;                                                                          \
         dtype * current;                                                                        \
@@ -65,11 +83,11 @@
         return iter;                                                                            \
     }                                                                                           \
                                                                                                 \
-    inline static size_t dtype##_vector_iterator_has_next(dtype##_vector_iterator * iter) {     \
+    inline static bool dtype##_vector_iterator_has_next(dtype##_vector_iterator * iter) {       \
         return iter->current < iter->end;                                                       \
     }                                                                                           \
                                                                                                 \
-    inline static size_t dtype##_vector_iterator_has_prev(dtype##_vector_iterator * iter) {     \
+    inline static bool dtype##_vector_iterator_has_prev(dtype##_vector_iterator * iter) {       \
         return iter->current >= iter->start;                                                    \
     }                                                                                           \
                                                                                                 \

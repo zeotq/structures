@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define Z_DEQ(dtype)                                                                          \
-    typedef struct deq_dtype##_item_ {                                                        \
+    typedef struct dtype##_deq_item_ {                                                        \
         dtype data;                                                                           \
         struct deq_dtype##_item_ * next;                                                      \
         struct deq_dtype##_item_ * prev;                                                      \
