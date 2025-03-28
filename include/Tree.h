@@ -110,7 +110,12 @@ static inline void dtype##_tree_destroy(dtype##_tree * tree) {                  
     free(tree);                                                                                                  \
 }                                                                                                                \
                                                                                                                  \
-static inline void dtype##_tree_delete_node(dtype##_tree_node * node) {                                          \
+static inline void dtype##_tree_delete_node(dtype##_tree * tree, dtype##_tree_node * node) {                     \
+    if (tree->root_node == node) {                                                                               \
+        dtype##_tree_destroy_node(tree->root_node);                                                              \
+        tree->root_node = NULL;                                                                                  \
+        return;                                                                                                  \
+    }                                                                                                            \
     dtype##_tree_node * parent_node = node->parent;                                                              \
     if (node->parent) {                                                                                          \
         uintptr_t_vector * parent_children = node->parent->children;                                             \
