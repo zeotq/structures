@@ -33,7 +33,7 @@ typedef struct dtype##_tree_ {                                                  
 } dtype##_tree;                                                                                                  \
                                                                                                                  \
 /*Create Node with value and parent (Default must be NULL)*/                                                     \
-dtype##_tree_node * dtype##_tree_create_node(dtype value) {                                                      \
+static inline dtype##_tree_node * dtype##_tree_create_node(dtype value) {                                        \
     dtype##_tree_node * node = (dtype##_tree_node *) malloc(sizeof(dtype##_tree_node));                          \
     node->data = value;                                                                                          \
     node->parent = NULL;                                                                                         \
@@ -42,31 +42,31 @@ dtype##_tree_node * dtype##_tree_create_node(dtype value) {                     
 }                                                                                                                \
                                                                                                                  \
 /*Create empty Tree*/                                                                                            \
-dtype##_tree * dtype##_tree_create_from_value(dtype root_value) {                                                \
+static inline dtype##_tree * dtype##_tree_create_empty(dtype root_value) {                                       \
     dtype##_tree * tree = (dtype##_tree *) malloc(sizeof(dtype##_tree));                                         \
     tree->root_node = NULL;                                                                                      \
     return tree;                                                                                                 \
 }                                                                                                                \
                                                                                                                  \
 /*Create Tree from root value*/                                                                                  \
-dtype##_tree * dtype##_tree_create_from_value(dtype root_value) {                                                \
+static inline dtype##_tree * dtype##_tree_create_from_value(dtype root_value) {                                  \
     dtype##_tree * tree = (dtype##_tree *) malloc(sizeof(dtype##_tree));                                         \
     tree->root_node = dtype##_tree_create_node(root_value);                                                      \
     return tree;                                                                                                 \
 }                                                                                                                \
                                                                                                                  \
 /*Create Tree from node*/                                                                                        \
-dtype##_tree * dtype##_tree_create_from_node(dtype##_tree_node * node) {                                         \
+static inline dtype##_tree * dtype##_tree_create_from_node(dtype##_tree_node * node) {                           \
     dtype##_tree * tree = (dtype##_tree *) malloc(sizeof(dtype##_tree));                                         \
     tree->root_node = node;                                                                                      \
     return tree;                                                                                                 \
 }                                                                                                                \
                                                                                                                  \
-bool dtype##_tree_is_empty(dtype##_tree * tree) {                                                                \
+static inline bool dtype##_tree_is_empty(dtype##_tree * tree) {                                                  \
     return tree->root_node == NULL;                                                                              \
 }                                                                                                                \
                                                                                                                  \
-bool dtype##_tree_insert_node(dtype##_tree * tree, dtype##_tree_node * parent, dtype##_tree_node * node) {       \
+static bool dtype##_tree_insert_node(dtype##_tree * tree, dtype##_tree_node * parent, dtype##_tree_node * node) {       \
     if (dtype##_tree_is_empty(tree)) {                                                                           \
         tree->root_node = node;                                                                                  \
         return true;                                                                                             \
@@ -79,7 +79,7 @@ bool dtype##_tree_insert_node(dtype##_tree * tree, dtype##_tree_node * parent, d
     return false;                                                                                                \
 }                                                                                                                \
                                                                                                                  \
-bool dtype##_tree_insert_value(dtype##_tree * tree, dtype##_tree_node * parent, dtype value) {                   \
+static bool dtype##_tree_insert_value(dtype##_tree * tree, dtype##_tree_node * parent, dtype value) {            \
     if (parent && !dtype##_tree_is_empty(tree)) {                                                                \
         dtype##_tree_node * node = dtype##_tree_create_node(value);                                              \
         node->parent = parent;                                                                                   \
@@ -95,7 +95,7 @@ bool dtype##_tree_insert_value(dtype##_tree * tree, dtype##_tree_node * parent, 
                                                                                                                  \
 /*Destroy Node and all Child-Nodes recursive*/                                                                   \
 /*Does not remove children from the parent children list*/                                                       \
-void dtype##_tree_destroy_node(dtype##_tree_node * node) {                                                       \
+static void dtype##_tree_destroy_node(dtype##_tree_node * node) {                                                \
     uintptr_t_vector_iterator it = uintptr_t_vector_iterator_begin(node->children);                              \
     while (uintptr_t_vector_iterator_has_next(&it)) {                                                            \
         dtype##_tree_destroy_node((dtype##_tree_node *) *uintptr_t_vector_iterator_next(&it));                   \
@@ -105,12 +105,12 @@ void dtype##_tree_destroy_node(dtype##_tree_node * node) {                      
 }                                                                                                                \
                                                                                                                  \
 /*Destroy Tree and all Child-Nodes recursive (uses dtype##_tree_destroy_node)*/                                  \
-void dtype##_tree_destroy(dtype##_tree * tree) {                                                                 \
+static inline void dtype##_tree_destroy(dtype##_tree * tree) {                                                   \
     dtype##_tree_destroy_node(tree->root_node);                                                                  \
     free(tree);                                                                                                  \
 }                                                                                                                \
                                                                                                                  \
-void dtype##_tree_delete_node(dtype##_tree_node * node) {                                                        \
+static inline void dtype##_tree_delete_node(dtype##_tree_node * node) {                                          \
     dtype##_tree_node * parent_node = node->parent;                                                              \
     if (node->parent) {                                                                                          \
         uintptr_t_vector * parent_children = node->parent->children;                                             \
@@ -129,7 +129,7 @@ void dtype##_tree_delete_node(dtype##_tree_node * node) {                       
 }                                                                                                                \
                                                                                                                  \
 /*Find Node with value between children*/                                                                        \
-dtype##_tree_node * dtype##_tree_find_in_childs(dtype##_tree_node * node, dtype value) {                         \
+static dtype##_tree_node * dtype##_tree_find_in_childs(dtype##_tree_node * node, dtype value) {                  \
     uintptr_t_vector_iterator it = uintptr_t_vector_iterator_begin(node->children);                              \
     while (uintptr_t_vector_iterator_has_next(&it)) {                                                            \
         dtype##_tree_node * child_node = (dtype##_tree_node *) *uintptr_t_vector_iterator_next(&it);             \
@@ -145,7 +145,7 @@ dtype##_tree_node * dtype##_tree_find_in_childs(dtype##_tree_node * node, dtype 
 }                                                                                                                \
                                                                                                                  \
 /*Find Node with value*/                                                                                         \
-dtype##_tree_node * dtype##_tree_find(dtype##_tree * tree, dtype value) {                                        \
+static inline dtype##_tree_node * dtype##_tree_find(dtype##_tree * tree, dtype value) {                          \
     if (tree->root_node->data == value) {                                                                        \
         return tree->root_node;                                                                                  \
     }                                                                                                            \
@@ -153,7 +153,7 @@ dtype##_tree_node * dtype##_tree_find(dtype##_tree * tree, dtype value) {       
 }                                                                                                                \
                                                                                                                  \
 /*Print node */                                                                                                  \
-void dtype##_node_children_print(dtype##_tree_node * node, size_t lvl) {                                         \
+static void dtype##_node_children_print(dtype##_tree_node * node, size_t lvl) {                                  \
     uintptr_t_vector_iterator it = uintptr_t_vector_iterator_begin(node->children);                              \
     while (uintptr_t_vector_iterator_has_next(&it)) {                                                            \
         for(size_t i = 0; i < lvl; ++i) {                                                                        \
@@ -169,7 +169,7 @@ void dtype##_node_children_print(dtype##_tree_node * node, size_t lvl) {        
                                                                                                                  \
 /*Print all tree values with depth formating*/                                                                   \
 /*Support int, float, char*/                                                                                     \
-void dtype##_tree_print(dtype##_tree * tree) {                                                                   \
+static inline void dtype##_tree_print(dtype##_tree * tree) {                                                     \
     PRINT_VALUE(dtype, tree->root_node->data);                                                                   \
     printf("\n");                                                                                                \
     dtype##_node_children_print(tree->root_node, 1);                                                             \
