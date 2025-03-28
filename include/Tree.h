@@ -42,7 +42,7 @@ static inline dtype##_tree_node * dtype##_tree_create_node(dtype value) {       
 }                                                                                                                \
                                                                                                                  \
 /*Create empty Tree*/                                                                                            \
-static inline dtype##_tree * dtype##_tree_create_empty(dtype root_value) {                                       \
+static inline dtype##_tree * dtype##_tree_create_empty() {                                                       \
     dtype##_tree * tree = (dtype##_tree *) malloc(sizeof(dtype##_tree));                                         \
     tree->root_node = NULL;                                                                                      \
     return tree;                                                                                                 \
