@@ -28,9 +28,9 @@ typedef struct dname##_node_ {                                                  
     uintptr_t_vector * children;                                                                                 \
 } dname##_node;                                                                                                  \
                                                                                                                  \
-typedef struct dname##_tree_ {                                                                                   \
+typedef struct dname_ {                                                                                          \
     dname##_node * root_node;                                                                                    \
-} dname##_tree;                                                                                                  \
+} dname;                                                                                                         \
                                                                                                                  \
 /*Create Node with value and parent (Default must be NULL)*/                                                     \
 static inline dname##_node * dname##_create_node(dtype value) {                                                  \
@@ -42,31 +42,31 @@ static inline dname##_node * dname##_create_node(dtype value) {                 
 }                                                                                                                \
                                                                                                                  \
 /*Create empty Tree*/                                                                                            \
-static inline dname##_tree* dname##_create_empty() {                                                             \
-    dname##_tree* tree = (dname##_tree*) malloc(sizeof(dname##_tree));                                           \
+static inline dname* dname##_create_empty() {                                                                    \
+    dname* tree = (dname*) malloc(sizeof(dname));                                                                \
     tree->root_node = NULL;                                                                                      \
     return tree;                                                                                                 \
 }                                                                                                                \
                                                                                                                  \
 /*Create Tree from root value*/                                                                                  \
-static inline dname##_tree* dname##_create_from_value(dtype root_value) {                                        \
-    dname##_tree* tree = (dname##_tree*) malloc(sizeof(dname##_tree));                                           \
+static inline dname* dname##_create_from_value(dtype root_value) {                                               \
+    dname* tree = (dname*) malloc(sizeof(dname));                                                                \
     tree->root_node = dname##_create_node(root_value);                                                           \
     return tree;                                                                                                 \
 }                                                                                                                \
                                                                                                                  \
 /*Create Tree from node*/                                                                                        \
-static inline dname##_tree* dname##_create_from_node(dname##_node * node) {                                      \
-    dname##_tree* tree = (dname##_tree*) malloc(sizeof(dname##_tree));                                           \
+static inline dname* dname##_create_from_node(dname##_node * node) {                                             \
+    dname* tree = (dname*) malloc(sizeof(dname));                                                                \
     tree->root_node = node;                                                                                      \
     return tree;                                                                                                 \
 }                                                                                                                \
                                                                                                                  \
-static inline bool dname##_is_empty(dname##_tree* tree) {                                                        \
+static inline bool dname##_is_empty(dname* tree) {                                                               \
     return tree->root_node == NULL;                                                                              \
 }                                                                                                                \
                                                                                                                  \
-static bool dname##_insert_node(dname##_tree* tree, dname##_node * parent, dname##_node * node) {                \
+static bool dname##_insert_node(dname* tree, dname##_node * parent, dname##_node * node) {                       \
     if (dname##_is_empty(tree)) {                                                                                \
         tree->root_node = node;                                                                                  \
         return true;                                                                                             \
@@ -79,7 +79,7 @@ static bool dname##_insert_node(dname##_tree* tree, dname##_node * parent, dname
     return false;                                                                                                \
 }                                                                                                                \
                                                                                                                  \
-static bool dname##_insert_value(dname##_tree* tree, dname##_node * parent, dtype value) {                       \
+static bool dname##_insert_value(dname* tree, dname##_node * parent, dtype value) {                              \
     if (parent && !dname##_is_empty(tree)) {                                                                     \
         dname##_node * node = dname##_create_node(value);                                                        \
         node->parent = parent;                                                                                   \
@@ -105,12 +105,12 @@ static void dname##_destroy_node(dname##_node * node) {                         
 }                                                                                                                \
                                                                                                                  \
 /*Destroy Tree and all Child-Nodes recursive (uses dname##_destroy_node)*/                                       \
-static inline void dname##_destroy(dname##_tree* tree) {                                                         \
+static inline void dname##_destroy(dname* tree) {                                                                \
     dname##_destroy_node(tree->root_node);                                                                       \
     free(tree);                                                                                                  \
 }                                                                                                                \
                                                                                                                  \
-static inline void dname##_delete_node(dname##_tree* tree, dname##_node * node) {                                \
+static inline void dname##_delete_node(dname* tree, dname##_node * node) {                                       \
     if (tree->root_node == node) {                                                                               \
         dname##_destroy_node(tree->root_node);                                                                   \
         tree->root_node = NULL;                                                                                  \
@@ -150,7 +150,7 @@ static dname##_node * dname##_find_in_childs(dname##_node * node, dtype value) {
 }                                                                                                                \
                                                                                                                  \
 /*Find Node with value*/                                                                                         \
-static inline dname##_node * dname##_find(dname##_tree* tree, dtype value) {                                     \
+static inline dname##_node * dname##_find(dname* tree, dtype value) {                                            \
     if (tree->root_node->data == value) {                                                                        \
         return tree->root_node;                                                                                  \
     }                                                                                                            \
@@ -174,7 +174,7 @@ static void dname##_node_children_print(dname##_node * node, size_t lvl) {      
                                                                                                                  \
 /*Print all tree values with depth formating*/                                                                   \
 /*Support int, float, char*/                                                                                     \
-static inline void dname##_print(dname##_tree* tree) {                                                           \
+static inline void dname##_print(dname* tree) {                                                                  \
     PRINT_VALUE(dtype, tree->root_node->data);                                                                   \
     printf("\n");                                                                                                \
     dname##_node_children_print(tree->root_node, 1);                                                             \
