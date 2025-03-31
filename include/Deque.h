@@ -12,7 +12,7 @@
         struct deq_dname##_item_ * prev;                                                      \
     } dname##_item;                                                                           \
                                                                                               \
-    typedef struct {                                                                          \
+    typedef struct dname##_ {                                                                 \
         dname##_item * front;                                                                 \
         dname##_item * back;                                                                  \
         size_t size;                                                                          \

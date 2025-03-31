@@ -28,7 +28,7 @@ typedef struct dname##_node_ {                                                  
     uintptr_t_vector * children;                                                                                 \
 } dname##_node;                                                                                                  \
                                                                                                                  \
-typedef struct dname_ {                                                                                          \
+typedef struct dname##_ {                                                                                        \
     dname##_node * root_node;                                                                                    \
 } dname;                                                                                                         \
                                                                                                                  \
