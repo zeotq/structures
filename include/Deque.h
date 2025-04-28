@@ -8,8 +8,8 @@
 #define Z_DEQ(dtype, dname)                                                                   \
     typedef struct dname##_item_ {                                                            \
         dtype data;                                                                           \
-        struct deq_dname##_item_ * next;                                                      \
-        struct deq_dname##_item_ * prev;                                                      \
+        struct dname##_item_ * next;                                                          \
+        struct dname##_item_ * prev;                                                          \
     } dname##_item;                                                                           \
                                                                                               \
     typedef struct dname##_ {                                                                 \
