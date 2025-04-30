@@ -41,7 +41,7 @@
     }                                                                                           \
                                                                                                 \
     inline static dtype * dname##_at(dname * vec, size_t vec_index) {                           \
-        assert(("Index out of range!\n", vec_index > vec->size));                               \
+        assert(("Index out of range!\n", vec_index < vec->size));                               \
         return &vec->data[vec_index];                                                           \
     }                                                                                           \
                                                                                                 \
@@ -53,7 +53,7 @@
     }                                                                                           \
                                                                                                 \
     inline static dtype dname##_pop_back(dname * vec) {                                         \
-        assert(("Error in front of monitor!\n", !vec->size));                                   \
+        assert(("Error in front of monitor!\n",  vec->size));                                   \
         return vec->data[--vec->size];                                                          \
     }                                                                                           \
                                                                                                 \
