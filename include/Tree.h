@@ -5,18 +5,6 @@
 #include <stdint.h>
 #include "Vector.h"
 
-#define PRINT_VALUE(dtype, value) do {                                                                           \
-    if (__builtin_types_compatible_p(dtype, int32_t))                                                            \
-        printf("%d", value);                                                                                     \
-    else if (__builtin_types_compatible_p(dtype, uint32_t))                                                      \
-        printf("%u", value);                                                                                     \
-    else if (__builtin_types_compatible_p(dtype, double))                                                        \
-        printf("%d", value);                                                                                     \
-    else if (__builtin_types_compatible_p(dtype, char))                                                          \
-        printf("%c", value);                                                                                     \
-    else                                                                                                         \
-        printf("ERROR: Use custom print function!");                                                             \
-} while(0)
 
 #define Z_TREE(dtype, dname)                                                                                     \
                                                                                                                  \
@@ -159,7 +147,7 @@ static inline dname##_node * dname##_find(dname* tree, dtype value) {           
 }                                                                                                                \
                                                                                                                  \
 /*Print node */                                                                                                  \
-static void dname##_node_children_print(dname##_node * node, size_t lvl) {                                       \
+static void dname##_node_children_print(dname##_node * node, void (*func)(dtype), size_t lvl) {                  \
     dname##_node_vector_iterator it = dname##_node_vector_iterator_begin(node->children);                        \
     while (dname##_node_vector_iterator_has_next(&it)) {                                                         \
         for(size_t i = 0; i < lvl; ++i) {                                                                        \
@@ -167,18 +155,18 @@ static void dname##_node_children_print(dname##_node * node, size_t lvl) {      
         }                                                                                                        \
         dname##_node * child_node = (dname##_node *) *dname##_node_vector_iterator_next(&it);                    \
         dtype value = child_node->data;                                                                          \
-        PRINT_VALUE(dtype, value);                                                                               \
+        func(value);                                                                                             \
         printf("\n");                                                                                            \
-        dname##_node_children_print(child_node, lvl + 1);                                                        \
+        dname##_node_children_print(child_node, func, lvl + 1);                                                  \
     }                                                                                                            \
 }                                                                                                                \
                                                                                                                  \
 /*Print all tree values with depth formating*/                                                                   \
 /*Support int, float, char*/                                                                                     \
-static inline void dname##_print(dname* tree) {                                                                  \
-    PRINT_VALUE(dtype, tree->root_node->data);                                                                   \
+static inline void dname##_print(dname* tree, void (*func)(dtype)) {                                             \
+    func(tree->root_node->data);                                                                                 \
     printf("\n");                                                                                                \
-    dname##_node_children_print(tree->root_node, 1);                                                             \
+    dname##_node_children_print(tree->root_node, func, 1);                                                       \
 }                                                                                                                \
 
 #endif // Z_TREE_HPP
