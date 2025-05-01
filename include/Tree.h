@@ -96,6 +96,7 @@ static bool dname##_insert_value(dname* tree, dname##_node * parent, dtype value
 /*Destroy Node and all Child-Nodes recursive*/                                                                   \
 /*Does not remove children from the parent children list*/                                                       \
 static void dname##_destroy_node(dname##_node * node) {                                                          \
+    if (!node) return;                                                                                           \
     dname##_node_vector_iterator it = dname##_node_vector_iterator_begin(node->children);                        \
     while (dname##_node_vector_iterator_has_next(&it)) {                                                         \
         dname##_destroy_node((dname##_node *) *dname##_node_vector_iterator_next(&it));                          \
